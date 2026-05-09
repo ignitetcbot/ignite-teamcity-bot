@@ -126,6 +126,17 @@ public class UserServiceTest {
         assertFalse(commonScript.contains("dropbtn'>Users"));
     }
 
+    @Test
+    public void adminUsersListEscapesHtmlBeforeRendering() throws IOException {
+        String commonScript = new String(Files.readAllBytes(commonJs()), StandardCharsets.UTF_8);
+
+        assertTrue(commonScript.contains("if (!menuData || menuData.admin !== true)"));
+        assertTrue(commonScript.contains("$(usersSelector).html(\"\")"));
+        assertTrue(commonScript.contains("escapeHtml(label)"));
+        assertTrue(commonScript.contains("escapeHtml(login)"));
+        assertTrue(commonScript.contains("$(usersSelector).html(res)"));
+    }
+
     private static UserService service(IUserStorage users, ITcBotUserCreds creds) throws Exception {
         TcBotApplicationContext appCtx = mock(TcBotApplicationContext.class);
         when(appCtx.getInstance(IUserStorage.class)).thenReturn(users);
